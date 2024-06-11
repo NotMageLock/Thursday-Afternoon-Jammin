@@ -15,9 +15,11 @@
             font-family: Arial, sans-serif;
         }
         #game-container {
-            display: grid;
-            grid-template-columns: repeat(4, 100px);
-            gap: 10px;
+            position: relative;
+            width: 460px;
+            height: 500px;
+            border: 2px solid #555;
+            overflow: hidden;
         }
         .key {
             width: 100px;
@@ -28,59 +30,97 @@
             background-color: #333;
             border: 2px solid #555;
             font-size: 2em;
-            transition: background-color 0.1s;
+            position: absolute;
+            bottom: 0;
         }
+        #left { left: 10px; }
+        #down { left: 120px; }
+        #up { left: 230px; }
+        #right { left: 340px; }
         .key.active {
             background-color: #f00;
+        }
+        .note {
+            width: 100px;
+            height: 100px;
+            background-color: #0f0;
+            position: absolute;
+            top: 0;
+            transition: top 0.05s linear;
         }
     </style>
 </head>
 <body>
     <div id="game-container">
-        <div id="up" class="key">↑</div>
-        <div id="down" class="key">↓</div>
         <div id="left" class="key">←</div>
+        <div id="down" class="key">↓</div>
+        <div id="up" class="key">↑</div>
         <div id="right" class="key">→</div>
-        <div id="w" class="key">W</div>
-        <div id="s" class="key">S</div>
-        <div id="a" class="key">A</div>
-        <div id="d" class="key">D</div>
     </div>
 
     <script>
+        const keyMap = {
+            'ArrowLeft': 'left',
+            'ArrowDown': 'down',
+            'ArrowUp': 'up',
+            'ArrowRight': 'right',
+            'a': 'left',
+            's': 'down',
+            'w': 'up',
+            'd': 'right'
+        };
+        const keys = ['left', 'down', 'up', 'right'];
+        const gameContainer = document.getElementById('game-container');
+        
         document.addEventListener('keydown', (event) => {
-            const keyMap = {
-                'ArrowUp': 'up',
-                'ArrowDown': 'down',
-                'ArrowLeft': 'left',
-                'ArrowRight': 'right',
-                'w': 'w',
-                's': 's',
-                'a': 'a',
-                'd': 'd'
-            };
             const keyPressed = keyMap[event.key];
             if (keyPressed) {
                 document.getElementById(keyPressed).classList.add('active');
+                checkHit(keyPressed);
             }
         });
 
         document.addEventListener('keyup', (event) => {
-            const keyMap = {
-                'ArrowUp': 'up',
-                'ArrowDown': 'down',
-                'ArrowLeft': 'left',
-                'ArrowRight': 'right',
-                'w': 'w',
-                's': 's',
-                'a': 'a',
-                'd': 'd'
-            };
             const keyPressed = keyMap[event.key];
             if (keyPressed) {
                 document.getElementById(keyPressed).classList.remove('active');
             }
         });
+
+        function createNote() {
+            const note = document.createElement('div');
+            note.classList.add('note');
+            const randomKey = keys[Math.floor(Math.random() * keys.length)];
+            note.dataset.key = randomKey;
+            note.style.left = document.getElementById(randomKey).style.left;
+            gameContainer.appendChild(note);
+            moveNoteDown(note);
+        }
+
+        function moveNoteDown(note) {
+            const interval = setInterval(() => {
+                const top = parseInt(note.style.top) || 0;
+                if (top >= gameContainer.clientHeight - 100) {
+                    clearInterval(interval);
+                    note.remove();
+                } else {
+                    note.style.top = top + 5 + 'px';
+                }
+            }, 50);
+        }
+
+        function checkHit(key) {
+            const notes = document.querySelectorAll('.note');
+            notes.forEach(note => {
+                const noteKey = note.dataset.key;
+                const noteTop = parseInt(note.style.top);
+                if (noteKey === key && noteTop >= gameContainer.clientHeight - 200 && noteTop <= gameContainer.clientHeight - 100) {
+                    note.remove();
+                }
+            });
+        }
+
+        setInterval(createNote, 1000);
     </script>
 </body>
 </html>
