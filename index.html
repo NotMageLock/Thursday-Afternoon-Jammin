@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FNF Clone</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        #game-container {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            gap: 10px;
+        }
+        .key {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #333;
+            border: 2px solid #555;
+            font-size: 2em;
+            transition: background-color 0.1s;
+        }
+        .key.active {
+            background-color: #f00;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="up" class="key">↑</div>
+        <div id="down" class="key">↓</div>
+        <div id="left" class="key">←</div>
+        <div id="right" class="key">→</div>
+        <div id="w" class="key">W</div>
+        <div id="s" class="key">S</div>
+        <div id="a" class="key">A</div>
+        <div id="d" class="key">D</div>
+    </div>
+
+    <script>
+        document.addEventListener('keydown', (event) => {
+            const keyMap = {
+                'ArrowUp': 'up',
+                'ArrowDown': 'down',
+                'ArrowLeft': 'left',
+                'ArrowRight': 'right',
+                'w': 'w',
+                's': 's',
+                'a': 'a',
+                'd': 'd'
+            };
+            const keyPressed = keyMap[event.key];
+            if (keyPressed) {
+                document.getElementById(keyPressed).classList.add('active');
+            }
+        });
+
+        document.addEventListener('keyup', (event) => {
+            const keyMap = {
+                'ArrowUp': 'up',
+                'ArrowDown': 'down',
+                'ArrowLeft': 'left',
+                'ArrowRight': 'right',
+                'w': 'w',
+                's': 's',
+                'a': 'a',
+                'd': 'd'
+            };
+            const keyPressed = keyMap[event.key];
+            if (keyPressed) {
+                document.getElementById(keyPressed).classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
